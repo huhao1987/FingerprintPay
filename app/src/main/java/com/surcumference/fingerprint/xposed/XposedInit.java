@@ -1,6 +1,7 @@
 package com.surcumference.fingerprint.xposed;
 
 import static com.surcumference.fingerprint.Constant.PACKAGE_NAME_ALIPAY;
+import static com.surcumference.fingerprint.Constant.PACKAGE_NAME_BOM;
 import static com.surcumference.fingerprint.Constant.PACKAGE_NAME_QQ;
 import static com.surcumference.fingerprint.Constant.PACKAGE_NAME_TAOBAO;
 import static com.surcumference.fingerprint.Constant.PACKAGE_NAME_WECHAT;
@@ -36,7 +37,10 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
     @Override
     public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
-        if (PACKAGE_NAME_WECHAT.equals(lpparam.packageName)) {
+        if(PACKAGE_NAME_BOM.equals(lpparam.packageName)){
+            initBom(lpparam);
+        }
+        else if (PACKAGE_NAME_WECHAT.equals(lpparam.packageName)) {
             initWechat(lpparam);
         } else if (PACKAGE_NAME_ALIPAY.equals(lpparam.packageName)) {
             initAlipay(lpparam);
@@ -46,6 +50,19 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             initQQ(lpparam);
         }
         initGeneric(lpparam);
+    }
+
+    private void initBom(final LoadPackageParam lpparam) {
+        L.d("loaded: [" + lpparam.packageName + "]" + " version:" + BuildConfig.VERSION_NAME);
+        XposedHelpers.findAndHookMethod(Instrumentation.class, "callApplicationOnCreate", Application.class, new XC_MethodHook() {
+            @TargetApi(21)
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                L.d("Application onCreate");
+                Context context = (Context) param.args[0];
+//                XposedPluginLoader.load(WeChatPlugin.class, context, lpparam);
+
+            }
+        });
     }
 
     private void initWechat(final LoadPackageParam lpparam) {

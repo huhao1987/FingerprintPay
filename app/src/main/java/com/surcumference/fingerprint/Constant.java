@@ -6,6 +6,7 @@ package com.surcumference.fingerprint;
 
 public class Constant {
 
+    public static final String PACKAGE_NAME_BOM="org.bom.bank";
     public static final String PACKAGE_NAME_WECHAT = "com.tencent.mm";
     public static final String PACKAGE_NAME_ALIPAY = "com.eg.android.AlipayGphone";
     public static final String PACKAGE_NAME_TAOBAO = "com.taobao.taobao";
